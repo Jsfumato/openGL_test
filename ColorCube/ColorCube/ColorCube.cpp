@@ -2,10 +2,59 @@
 #include "ColorCube.h"
 #include <gl/glut.h>
 #include <math.h>
+#include <vector>
+#include <functional>
 
-#define GL_PI 3.1415f
 static GLfloat xRot = 0.0f;
 static GLfloat yRot = 0.0f;
+static GLfloat width = 10.0f;
+
+std::vector<std::function<void(void)>> vertexVector;
+
+void SetVertex()
+{
+	vertexVector.clear();
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)0, (GLubyte)255, (GLubyte)0);
+		glVertex3f(0.0f, width, 0.0f);
+	});
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)0, (GLubyte)255, (GLubyte)255);
+		glVertex3f(0.0f, width, width);
+	});
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)255, (GLubyte)255, (GLubyte)255);
+		glVertex3f(width, width, width);
+	});
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)255, (GLubyte)255, (GLubyte)0);
+		glVertex3f(width, width, 0.0f);
+	});
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)0, (GLubyte)0, (GLubyte)0);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+	});
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)0, (GLubyte)0, (GLubyte)255);
+		glVertex3f(0.0f, 0.0f, width);
+	});
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)255, (GLubyte)0, (GLubyte)255);
+		glVertex3f(width, 0.0f, width);
+	});
+	vertexVector.push_back(
+		[]() {
+		glColor3ub((GLubyte)255, (GLubyte)0, (GLubyte)0);
+		glVertex3f(width, 0.0f, 0.0f);
+	});
+}
 
 void SetupRC()
 {
@@ -15,85 +64,65 @@ void SetupRC()
 	glEnable(GL_CULL_FACE);
 }
 
-void TimerFunc(int value)
+void ChangeSize(int w, int h)
 {
-	glutPostRedisplay();
-	glutTimerFunc(100, TimerFunc, 1);
-}
+	//glViewport(0, 0, w, h);
+	//GLfloat fAspect = (GLfloat)w / (GLfloat)h;
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
 
-void ChangeSizeOrtho(int w, int h)
-{
-	GLfloat nRange = 100.0f;
+	//gluPerspective(60.0f, fAspect, 1.0f, 500.0f);
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 
 	glViewport(0, 0, w, h);
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
 	if (w <= h)
-		glOrtho(-nRange, nRange, -nRange*h / w, nRange*h / w, -nRange*2.0f, nRange*2.0f);
-
+		glOrtho(-100.0f, 100.0f, -100.0f*h / w, 100.0f*h / w, 100.0f, -100.0f);
 	else
-		glOrtho(-nRange*w / h, nRange*w / h, -nRange, nRange, -nRange*2.0f, nRange*2.0f);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-}
-
-void ChangeSizePerspective(int w, int h)
-{
-	GLfloat fAspect;
-	glViewport(0, 0, w, h);
-	fAspect = (GLfloat)w / (GLfloat)h;
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	gluPerspective(60.0f, fAspect, 1.0f, 500.0f);
+		glOrtho(-100.0f*w / h, 100.0f*w / h, -100.0f, 100.0f, 100.0f, -100.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
 void RenderScene()
 {
-	static GLfloat fElect1 = 0.0f;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -100.0f);
-	glColor3ub(255, 0, 0);
-	glutSolidSphere(10.0f, 15, 15);
+	glShadeModel(GL_SMOOTH);
 
 	glPushMatrix();
-	glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
-	glTranslatef(90.0f, 0.0f, 0.0f);
-	glColor3ub(255, 255, 0);
-	glutSolidSphere(6.0f, 15, 15);
+	glRotatef(xRot, 1.0f, 0.0f, 0.0f);
+	glRotatef(yRot, 0.0f, 1.0f, 0.0f);
 
-	glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
-	glTranslatef(15.0f, 0.0f, 0.0f);
-	glColor3ub(105, 105, 0);
-	glutSolidSphere(3.0f, 15, 15);
-	glPopMatrix();
+	glBegin(GL_QUADS);
+		vertexVector[0]();
+		vertexVector[1]();
+		vertexVector[2]();
+		vertexVector[3]();
+	glEnd();		   
+					   
+	glBegin(GL_QUADS); 
+		vertexVector[4]();
+		vertexVector[7]();
+		vertexVector[6]();
+		vertexVector[5]();
+	glEnd();		   
+					   
+	glBegin(GL_QUAD_STRIP);
+		vertexVector[1]();
+		vertexVector[5]();
+		vertexVector[2]();
+		vertexVector[6]();
+		vertexVector[3]();
+		vertexVector[7]();
+		vertexVector[0]();
+		vertexVector[4]();
+		vertexVector[1]();
+		vertexVector[5]();
+	glEnd();
 
-	/*glPushMatrix();
-	glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
-	glTranslatef(-70.0f, 0.0f, 0.0f);
-	glutSolidSphere(6.0f, 15, 15);
 	glPopMatrix();
-
-	glPushMatrix();
-	glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
-	glTranslatef(0.0f, 0.0f, 60.0f);
-	glutSolidSphere(6.0f, 15, 15);
-	glPopMatrix();
-	*/
-	fElect1 += 5.0f;
-	if (fElect1 > 360.0f)
-		fElect1 = 0.0f;
 
 	glutSwapBuffers();
 }
@@ -117,14 +146,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE		hInstance,
 	_In_ int			nCmdShow)
 {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowPosition(0, 0); // add
-	glutInitWindowSize(512, 512); // add
-	glutCreateWindow("Atom");
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(512, 512);
+	glutCreateWindow("ColorCube");
 
-	//glutReshapeFunc(ChangeSizeOrtho);
-	glutReshapeFunc(ChangeSizePerspective);
-	glutTimerFunc(33, TimerFunc, 1);
-	glutSpecialFunc(ControlKey); // add
+	SetVertex();
+	glutReshapeFunc(ChangeSize);
+	glutSpecialFunc(ControlKey);
 	glutDisplayFunc(RenderScene);
 	SetupRC();
 	glutMainLoop();
