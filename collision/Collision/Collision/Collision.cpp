@@ -18,7 +18,9 @@ void Initialize()
 {
 	rectVector.clear();
 	rectVector.push_back(std::make_tuple(0.0f, 0.0f, 1.0f, 1.0f, 40.0f));
-	rectVector.push_back(std::make_tuple(-100.0f, -100.0f, 1.0f, 1.0f, 20.0f));
+	rectVector.push_back(std::make_tuple(-100.0f, -100.0f, 1.0f, 1.0f, 40.0f));
+	rectVector.push_back(std::make_tuple(-50.0f, -50.0f, 1.0f, 1.0f, 40.0f));
+	rectVector.push_back(std::make_tuple(50.0f, 50.0f, 1.0f, 1.0f, 40.0f));
 }
 
 void SetupRC()
@@ -73,23 +75,23 @@ void CheckCollisionRect()
 			GLfloat& yPosNext = std::get<1>(*iterNext);
 			GLfloat& xStepNext = std::get<2>(*iterNext);
 			GLfloat& yStepNext = std::get<3>(*iterNext);
-			GLsizei rsizeNext = std::get<4>(*iterNext);
+			//GLsizei rsizeNext = std::get<4>(*iterNext);
 
-			if (xPos < xPosNext)
-				rsize = rsize;
-			if (xPosNext < xPos)
-				rsize = rsizeNext;
+			//if (xPos < xPosNext)
+			//	rsize = rsize;
+			//if (xPosNext < xPos)
+			//	rsize = rsizeNext;
 
 			if ((abs(xPos - xPosNext) > rsize) || (abs(yPos - yPosNext) > rsize))
 				continue;
 
-			if (abs(xPos - xPosNext) < rsize)
+			if (abs(xPos - xPosNext) > abs(yPos - yPosNext))
 			{
 				xStep = -xStep;
 				xStepNext = -xStepNext;
 			}
 
-			if (abs(yPos - yPosNext) < rsize)
+			if (abs(xPos - xPosNext) < abs(yPos - yPosNext))
 			{
 				yStep = -yStep;
 				yStepNext = -yStepNext;
