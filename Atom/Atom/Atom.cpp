@@ -11,19 +11,24 @@ void SetupRC()
 {
 	GLfloat lightPos[] = { 0.0f, 0.0f, -100.0f, 1.0f };
 	
-
-	
-	GLfloat ambientLight[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-	GLfloat diffuseLight[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	GLfloat ambientLight[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	GLfloat diffuseLight[] = { 0.7f, 0.7f, 0.7f, 1.0f };
+	GLfloat specref[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat specular[] = { 0.5f, 0.5f, 0.5f, 0.5f };
+	GLfloat spotDir[] = { 0.0f, 0.0f, -1.0f };
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_LIGHTING);
 
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 60.0f);
 
 	glTranslatef(0.0f, 0.0f, -150.0f);
 
@@ -31,6 +36,8 @@ void SetupRC()
 
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
+	glMateriali(GL_FRONT, GL_SHININESS, 128);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
@@ -78,8 +85,6 @@ void ChangeSizePerspective(int w, int h)
 	gluPerspective(60.0f, fAspect, 1.0f, 500.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-
 }
 
 void RenderScene()
@@ -95,16 +100,16 @@ void RenderScene()
 	glutSolidSphere(10.0f, 15, 15);
 
 	glPushMatrix();
-	glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
-	glTranslatef(90.0f, 0.0f, 0.0f);
-	glColor3ub(255, 255, 0);
-	glutSolidSphere(6.0f, 15, 15);
+		glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
+		glTranslatef(90.0f, 0.0f, 0.0f);
+		glColor3ub(255, 255, 0);
+		glutSolidSphere(6.0f, 15, 15);
 
-	glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
-	glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
-	glTranslatef(30.0f, 0.0f, 0.0f);
-	glColor3ub(200, 200, 200);
-	glutSolidSphere(2.0f, 15, 15);
+		glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
+		glRotatef(fElect1, 0.0f, 1.0f, 0.0f);
+		glTranslatef(30.0f, 0.0f, 0.0f);
+		glColor3ub(200, 200, 200);
+		glutSolidSphere(2.0f, 15, 15);
 	glPopMatrix();
 
 	float minRad = 10.0f;
