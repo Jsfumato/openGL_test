@@ -66,22 +66,15 @@ void SetupRC()
 
 void ChangeSize(int w, int h)
 {
-	//glViewport(0, 0, w, h);
-	//GLfloat fAspect = (GLfloat)w / (GLfloat)h;
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-
-	//gluPerspective(60.0f, fAspect, 1.0f, 500.0f);
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
+	GLdouble aspect = h / w;
 
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	if (w <= h)
-		glOrtho(-100.0f, 100.0f, -100.0f*h / w, 100.0f*h / w, 100.0f, -100.0f);
-	else
-		glOrtho(-100.0f*w / h, 100.0f*w / h, -100.0f, 100.0f, 100.0f, -100.0f);
+
+	gluPerspective(60.0f, aspect, 1.0f, 300.0f);
+
+	glTranslatef(0.0f, 0.0f, -40.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
