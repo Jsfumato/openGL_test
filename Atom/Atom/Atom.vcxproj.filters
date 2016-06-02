@@ -30,12 +30,18 @@
     <ClInclude Include="Atom.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Atom.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
